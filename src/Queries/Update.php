@@ -38,6 +38,10 @@ class Update implements Query, QueryPartAware
 
     public function toString()
     {
+        $snippets = $this->joins;
+        $snippets[] = $this->updatePart;
+        $this->ensureNeededTablesArePresent($snippets);
+
         $queryParts = array(
             $this->buildUpdate(),
             $this->buildJoin(),

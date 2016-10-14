@@ -35,6 +35,10 @@ class Delete implements Query, QueryPartAware
 
     public function toString()
     {
+        $snippets = $this->joins;
+        $snippets[] = $this->from;
+        $this->ensureNeededTablesArePresent($snippets);
+
         $queryParts = array(
             'DELETE',
             $this->buildFrom(),

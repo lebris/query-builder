@@ -12,6 +12,7 @@ class IsPony implements QueryPart
     public function build(QueryPartAware $query)
     {
         $query
+            ->needTable('creatures')
             ->where(new Conditions\Equal(new Types\String('type'), 'pony'));
 
         return $query;

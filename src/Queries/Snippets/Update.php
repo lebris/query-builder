@@ -4,7 +4,7 @@ namespace Muffin\Queries\Snippets;
 
 use Muffin\Snippet;
 
-class Update implements Snippet
+class Update implements Snippet, NeedTableAware
 {
     private
         $tables;
@@ -48,5 +48,18 @@ class Update implements Snippet
         $tablesString = implode(', ', array_filter($tables));
 
         return sprintf('UPDATE %s', $tablesString);
+    }
+
+    public function hasNeededTable($tableName)
+    {
+        foreach($this->tables as $table)
+        {
+            if($table->getName() === $tableName || $table->getAlias() === $tableName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

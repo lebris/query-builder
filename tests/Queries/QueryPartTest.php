@@ -57,4 +57,124 @@ class QueryPartTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame("DELETE FROM burger AS b WHERE owner = 'Claude' AND color = 'white' AND age < 1", $query->toString($this->escaper));
     }
+
+    public function testNeededTableIsPresentInFromSnippet()
+    {
+        $query = (new Queries\Select())->setEscaper($this->escaper);
+        $query
+            ->select([ 'name', 'color' ])
+            ->from('creatures')
+            ->add(new IsPony())
+        ;
+
+        $query->toString();
+
+        $this->assertTrue(true);
+    }
+
+    public function testNeededTableIsPresentInJoinSnippet()
+    {
+        $query = (new Queries\Select())->setEscaper($this->escaper);
+        $query
+            ->select([ 'name', 'color' ])
+            ->from('burger')
+            ->innerJoin('creatures')->on('id_burger', 'id_creature')
+            ->add(new IsPony())
+        ;
+
+        $query->toString();
+
+        $this->assertTrue(true);
+    }
+
+    public function testNeededTableWithAliases()
+    {
+        $query = (new Queries\Select())->setEscaper($this->escaper);
+        $query
+            ->needTable('b')
+            ->needTable('p')
+            ->select([ 'name', 'color' ])
+            ->from('burger', 'b')
+            ->leftJoin('pony', 'p')->on('id_burger', 'id_pony')
+        ;
+
+        $query->toString();
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testMissingNeededTable()
+    {
+        $query = (new Queries\Select())->setEscaper($this->escaper);
+        $query
+            ->select([ 'name', 'color' ])
+            ->from('burger')
+            ->add(new IsPony())
+        ;
+
+        $query->toString();
+    }
+
+    public function testUpdateWithNeededTable()
+    {
+        $query = (new Queries\Update())->setEscaper($this->escaper);
+
+        $query
+            ->update('creatures')
+            ->set(array('owner' => 'John'))
+            ->add(new IsPony())
+        ;
+
+        $query->toString();
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testUpdateWithMissingNeededTable()
+    {
+        $query = (new Queries\Update())->setEscaper($this->escaper);
+
+        $query
+            ->update('animals')
+            ->set(array('owner' => 'John'))
+            ->add(new IsPony())
+        ;
+
+        $query->toString();
+    }
+
+    public function testDeleteWithNeededTable()
+    {
+        $query = (new Queries\Delete('creatures'))->setEscaper($this->escaper);
+
+        $query
+            ->where(new Conditions\Equal(new Types\String('owner'), 'Claude'))
+            ->add(new IsPony());
+        ;
+
+        $query->toString();
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testDeleteWithMissingNeededTable()
+    {
+        $query = (new Queries\Delete('burger'))->setEscaper($this->escaper);
+
+        $query
+            ->where(new Conditions\Equal(new Types\String('owner'), 'Claude'))
+            ->add(new IsPony());
+        ;
+
+        $query->toString();
+    }
 }

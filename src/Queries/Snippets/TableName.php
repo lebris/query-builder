@@ -31,4 +31,14 @@ class TableName implements Snippet
 
         return sprintf('%s AS %s', $this->tableName, $this->alias);
     }
+
+    public function getName()
+    {
+        return $this->tableName;
+    }
+
+    public function getAlias()
+    {
+        return $this->alias;
+    }
 }
