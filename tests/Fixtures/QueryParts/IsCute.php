@@ -1,6 +1,6 @@
 <?php
 
-namespace Muffin\Tests\QueryParts;
+namespace Muffin\Tests\Fixtures\QueryParts;
 
 use Muffin\QueryPart;
 use Muffin\QueryPartAware;

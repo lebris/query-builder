@@ -5,7 +5,6 @@ use Muffin\Conditions;
 use Muffin\Types;
 use Muffin\Tests\Escapers\SimpleEscaper;
 use Muffin\Queries\Snippets\OrderBy;
-use Muffin\Tests\QueryParts\IsCute;
 
 class DeleteTest extends PHPUnit_Framework_TestCase
 {
@@ -98,17 +97,5 @@ class DeleteTest extends PHPUnit_Framework_TestCase
         $query = (new Queries\Delete())->setEscaper($this->escaper);
 
         $query->toString();
-    }
-
-    public function testDeleteWithQueryPart()
-    {
-        $query = (new Queries\Delete('burger', 'b'))->setEscaper($this->escaper);
-
-        $query
-            ->where(new Conditions\Equal(new Types\String('owner'), 'Claude'))
-            ->add(new IsCute());
-        ;
-
-        $this->assertSame("DELETE FROM burger AS b WHERE owner = 'Claude' AND color = 'white' AND age < 1", $query->toString($this->escaper));
     }
 }

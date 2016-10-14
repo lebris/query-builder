@@ -5,7 +5,6 @@ use Muffin\Conditions;
 use Muffin\Types;
 use Muffin\Tests\Escapers\SimpleEscaper;
 use Muffin\Queries\Snippets\OrderBy;
-use Muffin\Tests\QueryParts\IsCute;
 
 class UpdateTest extends PHPUnit_Framework_TestCase
 {
@@ -113,19 +112,5 @@ class UpdateTest extends PHPUnit_Framework_TestCase
         ;
 
         $query->toString($this->escaper);
-    }
-
-    public function testUpdateWithQueryPart()
-    {
-        $query = (new Queries\Update())->setEscaper($this->escaper);
-
-        $query
-            ->update('poney')
-            ->set(array('owner' => 'John'))
-            ->where(new Conditions\In(new Types\String('author'), array('julian', 'claude')))
-            ->add(new IsCute())
-        ;
-
-        $this->assertSame("UPDATE poney SET owner = 'John' WHERE author IN ('julian', 'claude') AND color = 'white' AND age < 1", $query->toString($this->escaper));
     }
 }
