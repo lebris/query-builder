@@ -7,15 +7,17 @@ use Muffin\Condition;
 use Muffin\Traits\EscaperAware;
 use Muffin\Snippet;
 use Muffin\Queries\Snippets\Builders;
+use Muffin\QueryPartAware;
 
-class Update implements Query
+class Update implements Query, QueryPartAware
 {
     use
         EscaperAware,
         Builders\Join,
         Builders\Where,
         Builders\OrderBy,
-        Builders\Limit;
+        Builders\Limit,
+        Builders\QueryPart;
 
     private
         $updatePart,

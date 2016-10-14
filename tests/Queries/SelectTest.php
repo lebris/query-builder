@@ -4,6 +4,8 @@ use Muffin\Queries;
 use Muffin\Conditions;
 use Muffin\Types;
 use Muffin\Tests\Escapers\SimpleEscaper;
+use Muffin\Tests\QueryParts\IsPony;
+use Muffin\Tests\QueryParts\IsCute;
 
 class SelectTest extends PHPUnit_Framework_TestCase
 {
@@ -320,5 +322,19 @@ class SelectTest extends PHPUnit_Framework_TestCase
         ;
 
         $this->assertSame("SELECT COUNT(DISTINCT votes), id, name FROM poney WHERE name = 'burger'", $query->toString($this->escaper));
+    }
+
+    public function testSelectQueryPart()
+    {
+        $query = (new Queries\Select())->setEscaper($this->escaper);
+        $query
+            ->select([ 'name', 'color' ])
+            ->from('creatures')
+            ->add(new IsPony())
+            ->add(new IsCute())
+            ->where(new Conditions\Equal(new Types\String('owner'), 'Paul'))
+            ->having(new Conditions\Greater(new Types\Integer('rank'), 42));
+
+        $this->assertSame("SELECT name, color FROM creatures WHERE type = 'pony' AND color = 'white' AND age < 1 AND owner = 'Paul' HAVING rank > 42", $query->toString());
     }
 }
