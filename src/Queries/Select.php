@@ -8,8 +8,9 @@ use Muffin\Traits\EscaperAware;
 use Muffin\Snippet;
 use Muffin\Queries\Snippets\Builders;
 use Muffin\Queries\Snippets\Having;
+use Muffin\QueryPartAware;
 
-class Select implements Query
+class Select implements Query, QueryPartAware
 {
     use
         EscaperAware,
@@ -17,7 +18,8 @@ class Select implements Query
         Builders\Where,
         Builders\GroupBy,
         Builders\OrderBy,
-        Builders\Limit;
+        Builders\Limit,
+        Builders\QueryPart;
 
     private
         $select,
@@ -37,6 +39,10 @@ class Select implements Query
 
     public function toString()
     {
+        $snippets = $this->joins;
+        $snippets[] = $this->from;
+        $this->ensureNeededTablesArePresent($snippets);
+
         $queryParts = array(
             $this->buildSelect(),
             $this->buildFrom(),
