@@ -28,14 +28,6 @@ trait QueryPart
 
     public function ensureNeededTablesArePresent(array $snippets)
     {
-        foreach($snippets as $snippet)
-        {
-            if(! $snippet instanceof NeedTableAware)
-            {
-                throw new \LogicException('Snippet has not expected NeedTableAware type');
-            }
-        }
-
         foreach($this->neededTableNames as $tableName)
         {
             if(! $this->isAtLeastOneSnippetHasNeededTable($tableName, $snippets))
@@ -49,6 +41,11 @@ trait QueryPart
     {
         foreach($snippets as $snippet)
         {
+            if(! $snippet instanceof NeedTableAware)
+            {
+                throw new \LogicException('Snippet has not expected NeedTableAware type');
+            }
+
             if($snippet->hasNeededTable($tableName))
             {
                 return true;
